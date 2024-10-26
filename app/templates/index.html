@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule Validator Engine</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container" role="main">
+        <header>
+            <h1>Interactive Rule Validator Engine</h1>
+            <p class="description">Create and evaluate logical rules based on AST and data inputs to streamline your validations.</p>
+        </header>
+
+        <!-- Rule Creation Section -->
+        <section id="rule-creation" class="form-section" aria-labelledby="create-rule-heading">
+            <h2 id="create-rule-heading">Define Your Rule</h2>
+            <form id="rule-form" aria-describedby="rule-info">
+                <p id="rule-info" class="info">Define a new rule that you want to test against various data inputs.</p>
+                <label for="new-rule">Rule Expression:</label>
+                <input type="text" id="new-rule" name="new-rule" placeholder="e.g., temperature > 30" required aria-required="true" title="Define the rule logic">
+                <button type="submit">Add Rule</button>
+            </form>
+        </section>
+
+        <!-- Rule Evaluation Section -->
+        <section id="rule-evaluation" class="form-section" aria-labelledby="evaluate-rule-heading">
+            <h2 id="evaluate-rule-heading">Evaluate the Rule</h2>
+            <form id="evaluation-form" aria-describedby="evaluation-info">
+                <p id="evaluation-info" class="info">Provide an AST and data in JSON format to evaluate your rule.</p>
+                <div class="form-row">
+                    <div class="form-col">
+                        <label for="ast-input">AST (JSON format):</label>
+                        <textarea id="ast-input" name="ast-input" placeholder="Insert AST JSON here" required aria-required="true" title="AST in JSON format"></textarea>
+                    </div>
+                    <div class="form-col">
+                        <label for="data-input">Data (JSON format):</label>
+                        <textarea id="data-input" name="data-input" placeholder="Insert data JSON here" required aria-required="true" title="Data in JSON format"></textarea>
+                    </div>
+                </div>
+                <button type="submit">Run Evaluation</button>
+                <!-- Loading Spinner -->
+                <div id="loading-spinner" aria-hidden="true" hidden>
+                    <img src="{{ url_for('static', filename='images/spinner.gif') }}" alt="Loading..." />
+                </div>
+            </form>
+        </section>
+
+        <!-- Result Section -->
+        <section id="evaluation-result" class="result-section" hidden>
+            <p id="result-message" role="status">Awaiting evaluation...</p>
+        </section>
+
+        <!-- Success and Error Messages -->
+        <div id="message" aria-live="polite" hidden></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Display loading spinner and process forms
+            $('#evaluation-form').on('submit', function(event) {
+                event.preventDefault();
+                $('#loading-spinner').show();
+                $('#result-message').hide();
+
+                // Simulate evaluation delay
+                setTimeout(function() {
+                    $('#loading-spinner').hide();
+                    $('#evaluation-result').slideDown(300);
+                    $('#result-message').text("Evaluation complete: Rule passed!").show();
+                }, 1500);
+            });
+
+            // Clear messages on form focus
+            $('input, textarea').on('focus', function() {
+                $('#message').hide();
+                $('#result-message').hide();
+            });
+        });
+    </script>
+</body>
+</html>
